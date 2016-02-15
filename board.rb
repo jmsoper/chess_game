@@ -1,9 +1,11 @@
 require_relative 'piece'
 require_relative 'display'
+# require_relative 'cursorable'
 require "colorize"
 
 class Board
-  attr_reader :grid
+  # include Cursorable
+  attr_reader :grid, :display
 
   def initialize
     @grid = Array.new(8){Array.new(8)}
@@ -69,3 +71,4 @@ end
 
 board = Board.new
 board.print_board
+board.display.make_a_move
