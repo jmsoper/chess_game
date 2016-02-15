@@ -10,14 +10,26 @@ class Board
     set_board
   end
 
-  def [](pos)
-    x, y = pos
-    @grid[x][y]
+  def move(start, end_pos)
+    if self[*start].nil?
+      raise "There's no piece there."
+    end
+    this_piece = self[*start]
+    if !self[*end_pos].nil? && this_piece.color == self[*end_pos].color
+      raise "You can't land on your friend."
+    end
+    this_piece.pos = end_pos
+    self[*end_pos] = this_piece
+    self[*start] = nil
+
   end
 
-  def []=(pos, piece)
-    x, y = pos
-    @grid[x][y] = piece
+  def [](row, col)
+    @grid[row][col]
+  end
+
+  def []=(row, col, piece)
+    @grid[row][col] = piece
   end
 
   def print_board
@@ -41,18 +53,19 @@ class Board
     8.times do |i|
       self[6,i] = Pawn.new([6,i], self, "white")
     end
-    self[7,0] = Rook.new([7,0], self, "red")
-    self[7,1] = Knight.new([7,1], self, "red")
-    self[7,2] = Bishop.new([7,2], self, "red")
-    self[7,3] = King.new([7,3], self, "red")
-    self[7,4] = Queen.new([7,4], self, "red")
-    self[7,5] = Bishop.new([7,5], self, "red")
-    self[7,6] = Knight.new([7,6], self, "red")
-    self[7,7] = Rook.new([7,7], self, "red")
+    self[7,0] = Rook.new([7,0], self, "white")
+    self[7,1] = Knight.new([7,1], self, "white")
+    self[7,2] = Bishop.new([7,2], self, "white")
+    self[7,3] = King.new([7,3], self, "white")
+    self[7,4] = Queen.new([7,4], self, "white")
+    self[7,5] = Bishop.new([7,5], self, "white")
+    self[7,6] = Knight.new([7,6], self, "white")
+    self[7,7] = Rook.new([7,7], self, "white")
 
   end
 
 end
-#
-# board = Board.new
-# board.print_board
+
+
+board = Board.new
+board.print_board

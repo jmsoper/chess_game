@@ -1,19 +1,18 @@
-
+require 'byebug'
 class Display
 
   def initialize(board)
-    puts "hello!"
-
     @board = board
     @cursor = @board[0,0]
   end
 
   def show_board
     puts "  A  B  C  D  E  F  G  H"
-    @board.each_with_index do |row, index|
-      print index
+    @board.grid.each_with_index do |row, row_idx|
+      print row_idx
       row.each_with_index do |piece, index|
-        case piece.class
+        #  debugger
+        case piece
         when Rook
           print " ♖ ".colorize(piece.color.to_sym)
         when Knight
@@ -27,7 +26,7 @@ class Display
         when Pawn
           print " ♙ ".colorize(piece.color.to_sym)
         else
-          print " 🀆 "
+          print " ∙ "
         end
         if index == 7
           puts
