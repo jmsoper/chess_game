@@ -2,6 +2,7 @@ require_relative 'piece'
 require_relative 'display'
 # require_relative 'cursorable'
 require "colorize"
+require 'byebug'
 
 class Board
   # include Cursorable
@@ -13,25 +14,36 @@ class Board
   end
 
   def play
-    until false#create Game#won?
-      move(*(@display.get_move_input))
+    until false
+    begin
+      move
+    rescue ChessError => e
+      puts e.message
+      sleep(2)
+      retry
+    ensure
       system("clear")
       print_board
     end
   end
+end
 
-  def in_bounds?(pos)
-    pos.all?{|location| location >= 0 && location <= 7}
+  def occupied?(row, col)
+    !self[row, col].nil?
   end
 
-  def move(start, end_pos)
-    if self[*start].nil?
-      raise "There's no piece there."
-    end
+  def in_bounds?(pos)
+    [*pos].all?{|location| location >= 0 && location <= 7}
+  end
+
+  def move
+    # debugger
+    start, end_pos = @display.get_move_input
+    raise ChessError.new ("There's no piece there.") if self[*start].nil?
+    raise ChessError.new ("You can't land on your friend.") if occupied?(*end_pos) && !self[*start].other_color?(*end_pos)
+    raise ChessError.new ("That's not a legal move for this piece.") unless self[*start].moves.include?(end_pos)
+
     this_piece = self[*start]
-    if !self[*end_pos].nil? && this_piece.color == self[*end_pos].color
-      raise "You can't land on your friend."
-    end
     this_piece.pos = end_pos
     self[*end_pos] = this_piece
     self[*start] = nil
@@ -78,6 +90,10 @@ class Board
 
   end
 
+end
+
+
+class ChessError < StandardError
 end
 
 
