@@ -1,8 +1,3 @@
-require_relative 'piece'
-require_relative 'display'
-# require_relative 'cursorable'
-require "colorize"
-require 'byebug'
 
 class Board
   # include Cursorable
@@ -12,36 +7,6 @@ class Board
     @grid = Array.new(8){Array.new(8)}
   end
 
-  def play_game
-    set_board
-    until checkmate?("red") || checkmate?("white")
-      # debugger
-      if in_check?("red")
-        # debugger
-        puts "Red is in check."
-        sleep(2)
-      elsif in_check?("white")
-        # debugger
-        puts "White is in check."
-        sleep(2)
-      end
-      play
-    end
-    puts "Checkmate!"
-  end
-
-  def play
-    begin
-      move
-    rescue ChessError => e
-      puts e.message
-      sleep(2)
-      retry
-    ensure
-      system("clear")
-      print_board
-    end
-  end
 
   def other_color(color)
     return "white" if color == "red"
@@ -145,8 +110,3 @@ end
 
 class ChessError < StandardError
 end
-
-
-board = Board.new
-board.print_board
-board.play_game
