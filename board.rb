@@ -12,6 +12,18 @@ class Board
     set_board
   end
 
+  def play
+    until false#create Game#won?
+      move(*(@display.get_move_input))
+      system("clear")
+      print_board
+    end
+  end
+
+  def in_bounds?(pos)
+    pos.all?{|location| location >= 0 && location <= 7}
+  end
+
   def move(start, end_pos)
     if self[*start].nil?
       raise "There's no piece there."
@@ -71,4 +83,4 @@ end
 
 board = Board.new
 board.print_board
-board.display.make_a_move
+board.play

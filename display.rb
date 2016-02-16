@@ -9,7 +9,7 @@ class Display
     @cursor_pos = [0,0]
   end
 
-  def make_a_move
+  def get_move_input
     system("clear")
     show_board
     start = nil
@@ -26,9 +26,7 @@ class Display
       system("clear")
       show_board
     end
-      @board.move(start, end_pos)
-      system("clear")
-      show_board
+      return [start, end_pos]
   end
 
   def set_background(piece = nil, i,j)
