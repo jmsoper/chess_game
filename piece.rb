@@ -9,8 +9,43 @@ class Piece
     @directions = []
   end
 
+  def inspect
+    [@color, @pos, self.class]
+  end
+
   #moves returns an array of viable moves from a given position.
   def moves
+  end
+
+  def valid_moves
+    moves.reject{ |move| move_into_check?(move) }
+  end
+
+
+  def move_into_check?(end_pos)
+    check_board = dup_board
+
+    start = self.pos
+    self.pos = end_pos
+    check_board[*end_pos] = self
+    check_board[*start] = nil
+    check_board.in_check?(@color)
+  end
+
+  def dup_board
+    dup_board = Board.new
+    @board.grid.each_with_index do |row, row_index|
+      row.each_with_index do |col, col_index|
+        original_piece = @board[row_index, col_index]
+        if original_piece.nil?
+          dup_piece = nil
+        else
+         dup_piece = original_piece.dup
+         dup_board[row_index, col_index] = dup_piece
+       end
+      end
+    end
+    dup_board
   end
 
   #other_color? checks if an occupied position is occupied by a piece from the other taem

@@ -47,7 +47,7 @@ class Display
   def show_board
     puts "  A  B  C  D  E  F  G  H"
     @board.grid.each_with_index do |row, row_idx|
-      print row_idx
+      print (row_idx + 1)
       row.each_with_index do |piece, index|
         #  debugger
         color_options = set_background(piece, row_idx, index)

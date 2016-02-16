@@ -10,11 +10,27 @@ class Board
 
   def initialize
     @grid = Array.new(8){Array.new(8)}
+  end
+
+  def play_game
     set_board
+    until checkmate?("red") || checkmate?("white")
+      # debugger
+      if in_check?("red")
+        # debugger
+        puts "Red is in check."
+        sleep(2)
+      elsif in_check?("white")
+        # debugger
+        puts "White is in check."
+        sleep(2)
+      end
+      play
+    end
+    puts "Checkmate!"
   end
 
   def play
-    until false
     begin
       move
     rescue ChessError => e
@@ -26,7 +42,42 @@ class Board
       print_board
     end
   end
-end
+
+  def other_color(color)
+    return "white" if color == "red"
+    return "red" if color == "white"
+  end
+
+  def checkmate?(color)
+    our_pieces = find_piece(color)
+    if in_check?(color) && our_pieces.all?{|piece| piece.valid_moves.empty?}
+      return true
+    end
+    false
+  end
+
+  def in_check?(color)
+    king_pos = find_piece(color, King).first.pos
+    super_array = find_piece(other_color(color)).map {|piece| piece.moves}.flatten(1)
+    if super_array.include?(king_pos)
+
+      return true
+    end
+    false
+  end
+
+  def find_piece(color, piece_class = Piece)
+    array_of_pieces = []
+    self.grid.each_with_index do |row, row_index|
+      row.each_with_index do |col, col_index|
+        piece = self[row_index, col_index]
+        if piece.is_a?(piece_class) && piece.color == color
+          array_of_pieces << piece
+        end
+      end
+    end
+    array_of_pieces
+  end
 
   def occupied?(row, col)
     !self[row, col].nil?
@@ -37,7 +88,6 @@ end
   end
 
   def move
-    # debugger
     start, end_pos = @display.get_move_input
     raise ChessError.new ("There's no piece there.") if self[*start].nil?
     raise ChessError.new ("You can't land on your friend.") if occupied?(*end_pos) && !self[*start].other_color?(*end_pos)
@@ -82,8 +132,8 @@ end
     self[7,0] = Rook.new([7,0], self, "white")
     self[7,1] = Knight.new([7,1], self, "white")
     self[7,2] = Bishop.new([7,2], self, "white")
-    self[7,3] = King.new([7,3], self, "white")
-    self[7,4] = Queen.new([7,4], self, "white")
+    self[7,3] = Queen.new([7,3], self, "white")
+    self[7,4] = King.new([7,4], self, "white")
     self[7,5] = Bishop.new([7,5], self, "white")
     self[7,6] = Knight.new([7,6], self, "white")
     self[7,7] = Rook.new([7,7], self, "white")
@@ -99,4 +149,4 @@ end
 
 board = Board.new
 board.print_board
-board.play
+board.play_game
